@@ -1,0 +1,96 @@
+import fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+
+const filePath = './data/tasks.json';
+
+const readTasks = () => JSON.parse(fs.readFileSync(filePath));
+const writeTasks = (tasks) => fs.writeFileSync(filePath, JSON.stringify(tasks, null, 2));
+
+export const getAllTasks = (req, res) => {
+  const tasks = readTasks();
+  res.json(tasks);
+};
+
+export const createTask = (req, res) => {
+  const tasks = readTasks();
+  const newTask = {
+    id: uuidv4(),
+    title: req.body.title,
+    description: req.body.description,
+    date: req.body.date,
+    time: req.body.time,
+    status: 'pendente'
+  };
+  tasks.push(newTask);
+  writeTasks(tasks);
+  res.status(201).json(newTask);
+};
+
+export const updateTask = (req, res) => {
+  const tasks = readTasks();
+  const index = tasks.findIndex(task => task.id === req.params.id);
+  if (index === -1) return res.status(404).json({ message: 'Task not found' });
+
+  tasks[index] = { ...tasks[index], ...req.body };
+  writeTasks(tasks);
+  res.json(tasks[index]);
+};
+
+export const deleteTask = (req, res) => {
+  let tasks = readTasks();
+  const initialLength = tasks.length;
+  tasks = tasks.filter(task => task.id !== req.params.id);
+  if (tasks.length === initialLength) return res.status(404).json({ message: 'Task not found' });
+
+  writeTasks(tasks);
+  res.status(204).send();
+};
+import fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+
+const filePath = './data/tasks.json';
+
+const readTasks = () => JSON.parse(fs.readFileSync(filePath));
+const writeTasks = (tasks) => fs.writeFileSync(filePath, JSON.stringify(tasks, null, 2));
+
+export const getAllTasks = (req, res) => {
+  const tasks = readTasks();
+  res.json(tasks);
+};
+
+export const createTask = (req, res) => {
+  const tasks = readTasks();
+  const newTask = {
+    id: uuidv4(),
+    title: req.body.title,
+    description: req.body.description,
+    date: req.body.date,
+    time: req.body.time,
+    status: 'pendente'
+  };
+  tasks.push(newTask);
+  writeTasks(tasks);
+  res.status(201).json(newTask);
+};
+
+export const updateTask = (req, res) => {
+  const tasks = readTasks();
+  const index = tasks.findIndex(task => task.id === req.params.id);
+  if (index === -1) return res.status(404).json({ message: 'Task not found' });
+
+  tasks[index] = { ...tasks[index], ...req.body };
+  writeTasks(tasks);
+  res.json(tasks[index]);
+};
+
+export const deleteTask = (req, res) => {
+  let tasks = readTasks();
+  const initialLength = tasks.length;
+  tasks = tasks.filter(task => task.id !== req.params.id);
+  if (tasks.length === initialLength) return res.status(404).json({ message: 'Task not found' });
+
+  writeTasks(tasks);
+  res.status(204).send();
+};
